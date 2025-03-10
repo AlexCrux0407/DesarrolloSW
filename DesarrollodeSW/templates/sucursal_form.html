@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Nueva Sucursal</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form action="/web/sucursales/nueva" method="post">
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre de la Sucursal</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="mb-3">
+                <label for="num_empleados" class="form-label">Número de Empleados</label>
+                <input type="number" class="form-control" id="num_empleados" name="num_empleados" value="0" min="0">
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/web/sucursales" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="/static/img/restaurant.png" alt="Sucursal" class="img-fluid">
+            </div>
+            <div class="col-md-8">
+                <h3>Sucursal: {{ sucursal.nombre }}</h3>
+                <p>ID: {{ sucursal.id }}</p>
+                <p>No. De empleados: {{ sucursal.num_empleados }}</p>
+                <p>No. de proveedores: {{ sucursal.num_proveedores }}</p>
+                <p>No. De pedidos: {{ sucursal.num_pedidos }}</p>
+                
+                <div class="btn-group">
+                    <a href="/sucursales/edit/{{ sucursal.id }}" class="btn btn-warning">Modificar</a>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteSucursalModal">Eliminar</button>
+                    <a href="/sucursales" class="btn btn-secondary">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Empleados</h4>
+<div class="card mb-4">
+    <div class="card-body">
+        {% for empleado in empleados %}
+        <div class="row mb-2 p-2 border-bottom">
+            <div class="col-md-1">
+                <div class="user-icon bg-dark text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                    <i class="bi bi-person"></i>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <p class="mb-0"><strong>Nombre:</strong> {{ empleado.nombre }}</p>
+                <p class="mb-0"><strong>ID:</strong> {{ empleado.id }}</p>
+                <p class="mb-0"><strong>Puesto:</strong> {{ empleado.puesto }}</p>
+                <p class="mb-0"><strong>Contratación:</strong> {{ empleado.fecha_contratacion }}</p>
+            </div>
+            <div class="col-md-2">
+                <a href="/empleados/edit/{{ empleado.id }}" class="btn btn-sm btn-warning">Modificar</a>
+                <button class="btn btn-sm btn-danger" onclick="deleteEmpleado('{{ empleado.id }}')">Eliminar</button>        </div>
+        {% endfor %}
+        <div class="mt-3">
+            <a href="/empleados/new/{{ sucursal.id }}" class="btn btn-success">Agregar</a>
+            <a href="/sucursales" class="btn btn-secondary">Volver</a>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Sucursal Modal -->
+<div class="modal fade" id="deleteSucursalModal" tabindex="-1" aria-labelledby="deleteSucursalModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteSucursalModalLabel">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Está seguro que desea eliminar esta sucursal?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="deleteSucursal('{{ sucursal.id }}')">Eliminar</button>      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Empleado Modal -->
+<div class="modal fade" id="deleteEmpleadoModal" tabindex="-1" aria-labelledby="deleteEmpleadoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteEmpleadoModalLabel">Confirmar eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¿Está seguro que desea eliminar este empleado?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="deleteEmpleado()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let empleadoIdToDelete = null;
+
+function setEmpleadoId(id) {
+    empleadoIdToDelete = id;
+}
+
+function deleteSucursal(id) {
+    fetch('/sucursales/' + id, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        window.location.href = '/sucursales';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function deleteEmpleado() {
+    if (empleadoIdToDelete) {
+        fetch('/empleados/' + empleadoIdToDelete, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.reload();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+</script>
+{% endblock %}
